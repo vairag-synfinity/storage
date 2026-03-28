@@ -1,6 +1,6 @@
-export const handler = async (event: any) => {
+export async function POST(req: Request) {
     try {
-      const { fileName, base64 } = JSON.parse(event.body);
+      const { fileName, base64 } = await req.json();
   
       const response = await fetch(
         `https://api.github.com/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/uploads/${fileName}`,
@@ -20,28 +20,21 @@ export const handler = async (event: any) => {
       const data = await response.json();
   
       if (!response.ok) {
-        return {
-          statusCode: 400,
-          body: JSON.stringify({
-            error: data.message,
-          }),
-        };
+        return Response.json(
+          { error: data.message || "Upload failed" },
+          { status: response.status }
+        );
       }
   
-      // ✅ RAW URL (important)
       const url = `https://raw.githubusercontent.com/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/main/uploads/${fileName}`;
   
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ url }),
-      };
+      return Response.json({ url });
+  
     } catch (error: any) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({
-          error: error.message,
-        }),
-      };
+      return Response.json(
+        { error: error.message || "Server error" },
+        { status: 500 }
+      );
     }
-  };
+  }
   

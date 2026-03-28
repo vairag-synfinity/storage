@@ -12,7 +12,7 @@ export default function Upload() {
     reader.onload = async () => {
       const base64 = (reader.result as string).split(",")[1];
 
-      const res = await fetch("/.netlify/functions/upload", {
+      const res = await fetch("/api/github-uplode", {
         method: "POST",
         body: JSON.stringify({
           fileName: `${Date.now()}-${file.name}`,
