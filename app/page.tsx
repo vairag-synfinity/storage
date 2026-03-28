@@ -15,7 +15,7 @@ export default function Upload() {
       const res = await fetch("/api/github-uplode", {
         method: "POST",
         body: JSON.stringify({
-          fileName: `${Date.now()}`,
+          fileName: `${Date.now()}-${file.name}`,
           base64,
         }),
       });
